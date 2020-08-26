@@ -6,24 +6,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import th.go.rd.atm.model.Customer;
+import th.go.rd.atm.service.CustomerService;
 
-import java.util.ArrayList;
 
 @Controller
+@RequestMapping("/customer")
 public class CustomerController {
 
-    ArrayList<Customer> customers = new ArrayList<>();
+    private CustomerService customerService;
 
-    @GetMapping("/customer")
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+
+    //@GetMapping("/customer")  ย้ายไปใช้ข้างบนแทน
+    @GetMapping
     public String getCustomer(Model model){
-        model.addAttribute("allCustomers", customers);  //ส่งโมเดลที่เก็บออปเจ็ก customers ที่ชื่อ "allCustomers" ไปให้ view
+        model.addAttribute("allCustomers", customerService.getCustomer());
         return "customer";  // customer.html
     }
 
-    @PostMapping("/customer")
+    //@PostMapping("/customer")  ย้ายไปใช้ข้างบนแทน
+    @PostMapping
     public String registerCustomer(@ModelAttribute Customer customer, Model model){
-        customers.add(customer);
-        model.addAttribute("allCustomers", customers);
+        customerService.createCustomer(customer);
+        model.addAttribute("allCustomers", customerService.getCustomer());
         return "redirect:customer";
     }
 }
